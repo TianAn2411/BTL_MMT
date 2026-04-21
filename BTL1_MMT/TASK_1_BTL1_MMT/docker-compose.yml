@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  tracker:
+    build: ./tracker
+    container_name: tracker
+    ports:
+      - "9001:9001"
+    volumes:
+      - ./tracker/:/app
+    networks:
+      - p2pnet
+
+  peer1:
+    build: ./peer
+    container_name: peer1
+    environment:
+      - PEER_NAME=peer1
+      - PEER_PORT=9002
+      - TRACKER_URL=http://tracker:9001
+    ports:
+      - "9002:9002"
+    volumes:
+      - ./peer/:/app
+    networks:
+      - p2pnet
+
+  peer2:
+    build: ./peer
+    container_name: peer2
+    environment:
+      - PEER_NAME=peer2
+      - PEER_PORT=9003
+      - TRACKER_URL=http://tracker:9001
+    ports:
+      - "9003:9003"
+    volumes:
+      - ./peer/:/app
+    networks:
+      - p2pnet
+
+networks:
+  p2pnet:
+    driver: bridge
